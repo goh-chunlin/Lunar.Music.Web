@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!--
+	Copyright 2020 The Lunar.Music.Web AUTHORS. All rights reserved.
+    Use of this source code is governed by a license that can be found in the LICENSE file.
+-->
+<html>
+    <head>
+        <title>Login Callback Redirect</title>
+    </head>
+    <body onload="redirectToLoginPage();">
+
+    <script>
+        function redirectToLoginPage()
+        {
+            window.location = '{{ .loginURL }}';
+        }
+    </script>
+
+    </body>
+</html>

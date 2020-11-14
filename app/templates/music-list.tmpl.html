@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<!--
+	Copyright 2020 The Lunar.Music.Web AUTHORS. All rights reserved.
+    Use of this source code is governed by a license that can be found in the LICENSE file.
+	
+	==== About This Web Page Template ====
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+
+<head>
+    <title>Music List - Lunar Music</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://lunarmusicwebstatic.blob.core.windows.net/css/main.css" />
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header id="header">
+        <h1><strong><a href="/">Lunar Music</a></strong> by GCL Project</h1>
+        <nav id="nav">
+            <ul>
+                <li><a href="javascript:;" onclick="playAll();">Play All</a></li>
+                <li><a href="/auth/logout" onclick="return confirm('Are you sure that you want to logout?')">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+    <section id="main" class="wrapper">
+        <div class="container">
+            <header class="major special">
+                <h2>My Music</h2>
+                <p>{{ .title }}</p>
+            </header>
+                
+            {{ range .albums }}
+
+                <section>
+                    <h4>{{ .Title }}</h4>
+
+                    <div class="row">
+                        <div class="2u 12u$(xsmall)">
+                            <span class="image"><img src="{{ .ThumbnailURL }}" alt="{{ .Title }}" style="width: 120px;" /></span>
+                        </div>
+                        <div class="10u$ 12u$(xsmall)">
+                            <ol>
+                                {{ range .MusicItems }}
+                                    <li>{{ .Title }} by {{ .AlbumArtist }} - {{ .DurationDisplay }}</li>
+                                {{ end }}
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    
+                </section>
+
+                <hr />
+                
+            {{ end }}
+                
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <ul class="icons">
+                <li><a href="#" class="icon fa-facebook"></a></li>
+                <li><a href="#" class="icon fa-twitter"></a></li>
+                <li><a href="#" class="icon fa-instagram"></a></li>
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Untitled</li>
+                <li>Design: <a href="http://templated.co">TEMPLATED</a></li>
+                <li>Images: <a href="http://unsplash.com">Unsplash</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/jquery.min.js"></script>
+    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/skel.min.js"></script>
+    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/util.js"></script>
+    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/main.js"></script>
+	<script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/notify.min.js"></script>
+
+    <script>
+		function playAll() {
+			$.get("https://lunar-music.azurefd.net/send-command-to-raspberrypi?method=&description=", function (data) {
+				$.notify("Request is successfully submitted.", "success");
+			});
+        }
+    </script>
+</body>
+
+</html>
