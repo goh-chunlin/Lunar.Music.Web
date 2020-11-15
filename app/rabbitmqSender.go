@@ -59,7 +59,7 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 	for _, task := range command.Tasks {
 		if task.Name == "play-single" {
 			itemId := task.Content[0]
-			itemDownloadUrl, err := getOneDriveItemDownloadUrl(context, itemId)
+			itemDownloadUrl, fileName, err := getOneDriveItemDownloadUrlAndFileName(context, itemId)
 			if err != nil {
 				context.AbortWithStatusJSON(500, gin.H{
 					"message": fmt.Sprintf("The Download URL for item %v is invalid. Command will not be sent.", itemId),
@@ -68,7 +68,7 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 				return
 			}
 
-			task.Content = append(task.Content, itemDownloadUrl)
+			task.Content = append(task.Content, itemDownloadUrl, fileName)
 		}
 	}
 
