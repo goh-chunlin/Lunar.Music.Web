@@ -36,7 +36,7 @@ func main() {
 
 	router.GET("/api/HttpTrigger/", showMusicListPage)
 
-	router.GET("/api/HttpTrigger/send-command-to-raspberrypi", sendCommandToRaspberryPi)
+	router.POST("/api/HttpTrigger/send-command-to-raspberrypi", sendCommandToRaspberryPi)
 
 	router.Run(":" + customHandlerPort)
 }

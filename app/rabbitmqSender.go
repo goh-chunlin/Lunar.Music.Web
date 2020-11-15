@@ -5,37 +5,65 @@
 package main
 
 import (
-	"log"
+	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
 )
 
+type Command struct {
+	Tasks []*Task `json:"tasks"`
+}
+
+type Task struct {
+	Name    string    `json:"name"`
+	Content *[]string `json:"content"`
+}
+
 var rabbitMQServerConnectionString = os.Getenv("RABBITMQ_SERVER_CONNECTION_STRING")
 var rabbitMQChannelName = os.Getenv("RABBITMQ_CHANNEL_NAME")
+var rabbitMQAllowedMicrosoftUserId = os.Getenv("RABBITMQ_ALLOWED_MICROSOFT_USER_ID")
 
 func sendCommandToRaspberryPi(context *gin.Context) {
-	r := context.Request
-
-	methodQueryStrings, hasParam := r.URL.Query()["method"]
-	if !hasParam {
-		context.JSON(200, gin.H{
-			"message": "Missing parameter \"method\" in the query string.",
+	requestBody, err := context.GetRawData()
+	if err != nil {
+		context.JSON(500, gin.H{
+			"message": "The request body is invalid.",
 		})
 
 		return
 	}
 
-	descriptionQueryStrings, hasParam := r.URL.Query()["description"]
-	if !hasParam {
+	currentUserId, err := getOneDriveOwnerUserId(context)
+	if err != nil {
 		context.JSON(200, gin.H{
-			"message": "Missing parameter \"description\" in the query string.",
+			"message": fmt.Sprintf("Error in getting the user id: %v.", err.Error()),
 		})
 
 		return
 	}
 
+	if currentUserId != rabbitMQAllowedMicrosoftUserId {
+		context.JSON(200, gin.H{
+			"message": "The current logged in user is not allowed to send command to the Raspberry Pi.",
+		})
+
+		return
+	}
+
+	var command *Command
+	json.Unmarshal(requestBody, &command)
+
+	messageSent := sendCommandToRabbitMQServer(command)
+
+	context.JSON(200, gin.H{
+		"message": string(messageSent),
+	})
+}
+
+func sendCommandToRabbitMQServer(command *Command) []byte {
 	conn, err := amqp.Dial(rabbitMQServerConnectionString)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -54,10 +82,8 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	body := "play-all"
-	if methodQueryStrings[0] == "download" {
-		body = methodQueryStrings[0] + ":" + descriptionQueryStrings[0]
-	}
+	body, err := json.Marshal(command)
+	failOnError(err, "Failed to convert the command JSON to a byte slice")
 
 	err = ch.Publish(
 		"",     // exchange
@@ -65,13 +91,10 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 		false,  // mandatory
 		false,  // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
+			ContentType: "application/json",
+			Body:        body,
 		})
-	log.Printf(" [x] Sent %s", body)
 	failOnError(err, "Failed to publish a message")
 
-	context.JSON(200, gin.H{
-		"message": body,
-	})
+	return body
 }

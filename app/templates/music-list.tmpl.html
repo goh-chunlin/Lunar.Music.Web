@@ -93,7 +93,15 @@
 
     <script>
 		function playAll() {
-			$.get("https://lunar-music.azurefd.net/send-command-to-raspberrypi?method=&description=", function (data) {
+            $.ajax({
+                type: 'POST',
+                url: 'https://lunar-music.azurefd.net/send-command-to-raspberrypi',
+                data: '{"tasks":[{ "name": "play-all" }]}',
+                success: function(data) { alert('data: ' + data); },
+                contentType: "application/json",
+                dataType: 'json'
+            });
+			$.post("", function (data) {
 				$.notify("Request is successfully submitted.", "success");
 			});
         }
