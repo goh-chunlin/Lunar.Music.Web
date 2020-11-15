@@ -21,8 +21,26 @@ func getOneDriveOwnerUserId(context *gin.Context) (string, error) {
 		client := onedrive.NewClient(tc)
 
 		defaultDrive, err := client.Drives.Default(context)
-		if err == nil && defaultDrive.ID != "" {
-			return defaultDrive.Owner.User.ID, nil
+		if err == nil && defaultDrive.Id != "" {
+			return defaultDrive.Owner.User.Id, nil
+		}
+	}
+
+	return "", err
+}
+
+func getOneDriveItemDownloadUrl(context *gin.Context, itemId string) (string, error) {
+	var err error
+	token := getAccessAndRefreshTokenFromCookie(context)
+
+	if token != nil {
+		tc := oauthConfig.Client(context, token)
+
+		client := onedrive.NewClient(tc)
+
+		driveItem, err := client.DriveItems.Get(context, itemId)
+		if err == nil && driveItem.Id != "" {
+			return driveItem.DownloadURL, nil
 		}
 	}
 
