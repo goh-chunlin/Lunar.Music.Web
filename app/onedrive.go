@@ -29,7 +29,7 @@ func getOneDriveOwnerUserId(context *gin.Context) (string, error) {
 	return "", err
 }
 
-func getOneDriveItemDownloadUrl(context *gin.Context, itemId string) (string, error) {
+func getOneDriveItemDownloadUrlAndFileName(context *gin.Context, itemId string) (string, string, error) {
 	var err error
 	token := getAccessAndRefreshTokenFromCookie(context)
 
@@ -40,11 +40,11 @@ func getOneDriveItemDownloadUrl(context *gin.Context, itemId string) (string, er
 
 		driveItem, err := client.DriveItems.Get(context, itemId)
 		if err == nil && driveItem.Id != "" {
-			return driveItem.DownloadURL, nil
+			return driveItem.DownloadURL, driveItem.Name, nil
 		}
 	}
 
-	return "", err
+	return "", "", err
 }
 
 func getItemsInMusicDirectory(context *gin.Context, client *onedrive.Client) *onedrive.OneDriveDriveItemsResponse {
