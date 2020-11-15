@@ -97,13 +97,16 @@
                 type: 'POST',
                 url: 'https://lunar-music.azurefd.net/send-command-to-raspberrypi',
                 data: '{"tasks":[{ "name": "play-all" }]}',
-                success: function(data) { alert('data: ' + data); },
+                success: function(data) { 
+                    $.notify("Request is successfully submitted.", "success"); 
+                },
+                error: function(data) { 
+                    console.log(data);
+                    $.notify("Request cannot be processed. " + data.responseJSON.message, "error"); 
+                },
                 contentType: "application/json",
                 dataType: 'json'
             });
-			$.post("", function (data) {
-				$.notify("Request is successfully submitted.", "success");
-			});
         }
     </script>
 </body>

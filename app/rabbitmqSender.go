@@ -29,7 +29,7 @@ var rabbitMQAllowedMicrosoftUserId = os.Getenv("RABBITMQ_ALLOWED_MICROSOFT_USER_
 func sendCommandToRaspberryPi(context *gin.Context) {
 	requestBody, err := context.GetRawData()
 	if err != nil {
-		context.JSON(500, gin.H{
+		context.AbortWithStatusJSON(400, gin.H{
 			"message": "The request body is invalid.",
 		})
 
@@ -38,7 +38,7 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 
 	currentUserId, err := getOneDriveOwnerUserId(context)
 	if err != nil {
-		context.JSON(200, gin.H{
+		context.AbortWithStatusJSON(500, gin.H{
 			"message": fmt.Sprintf("Error in getting the user id: %v.", err.Error()),
 		})
 
@@ -46,7 +46,7 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 	}
 
 	if currentUserId != rabbitMQAllowedMicrosoftUserId {
-		context.JSON(200, gin.H{
+		context.AbortWithStatusJSON(403, gin.H{
 			"message": "The current logged in user is not allowed to send command to the Raspberry Pi.",
 		})
 
