@@ -18,8 +18,8 @@ type Command struct {
 }
 
 type Task struct {
-	Name    string    `json:"name"`
-	Content *[]string `json:"content"`
+	Name    string   `json:"name"`
+	Content []string `json:"content"`
 }
 
 var rabbitMQServerConnectionString = os.Getenv("RABBITMQ_SERVER_CONNECTION_STRING")
@@ -55,6 +55,22 @@ func sendCommandToRaspberryPi(context *gin.Context) {
 
 	var command *Command
 	json.Unmarshal(requestBody, &command)
+
+	for _, task := range command.Tasks {
+		if task.Name == "play-single" {
+			itemId := task.Content[0]
+			itemDownloadUrl, err := getOneDriveItemDownloadUrl(context, itemId)
+			if err != nil {
+				context.AbortWithStatusJSON(500, gin.H{
+					"message": fmt.Sprintf("The Download URL for item %v is invalid. Command will not be sent.", itemId),
+				})
+
+				return
+			}
+
+			task.Content = append(task.Content, itemDownloadUrl)
+		}
+	}
 
 	messageSent := sendCommandToRabbitMQServer(command)
 

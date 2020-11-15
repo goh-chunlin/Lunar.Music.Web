@@ -52,7 +52,7 @@
                         <div class="10u$ 12u$(xsmall)">
                             <ol>
                                 {{ range .MusicItems }}
-                                    <li>{{ .Title }} by {{ .AlbumArtist }} - {{ .DurationDisplay }}</li>
+                                    <li>{{ .Title }} by {{ .AlbumArtist }} - {{ .DurationDisplay }} <a href="javascript:;" class="icon fa-play-circle" onclick="playSingle('{{ .Id }}');"><span class="label">Play</span></a></li>
                                 {{ end }}
                             </ol>
                         </div>
@@ -97,6 +97,23 @@
                 type: 'POST',
                 url: 'https://lunar-music.azurefd.net/send-command-to-raspberrypi',
                 data: '{"tasks":[{ "name": "play-all" }]}',
+                success: function(data) { 
+                    $.notify("Request is successfully submitted.", "success"); 
+                },
+                error: function(data) { 
+                    console.log(data);
+                    $.notify("Request cannot be processed. " + data.responseJSON.message, "error"); 
+                },
+                contentType: "application/json",
+                dataType: 'json'
+            });
+        }
+
+        function playSingle(musicItemId) {
+            $.ajax({
+                type: 'POST',
+                url: 'https://lunar-music.azurefd.net/send-command-to-raspberrypi',
+                data: '{"tasks":[{ "name": "play-single", "content": ["' + musicItemId + '"] }]}',
                 success: function(data) { 
                     $.notify("Request is successfully submitted.", "success"); 
                 },

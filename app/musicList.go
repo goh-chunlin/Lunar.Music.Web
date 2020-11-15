@@ -47,7 +47,7 @@ func showMusicListPage(context *gin.Context) {
 		client := onedrive.NewClient(tc)
 
 		defaultDrive, err := client.Drives.Default(context)
-		if err == nil && defaultDrive.ID != "" {
+		if err == nil && defaultDrive.Id != "" {
 			isLoggedIn = true
 
 			titleOutput = "Welcome back, " + defaultDrive.Owner.User.DisplayName
