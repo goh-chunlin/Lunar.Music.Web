@@ -17,9 +17,20 @@ This is a web app for Lunar Music project. User will be using this web portal to
    1. Azure Active Directory
 1. RabbitMQ
 
-## Usage (Localhost) ##
+## Screenshots ##
+<div align="center">
+    <img src="https://gclstorage.blob.core.windows.net/images/Lunar.Music.Web-screenshot-01.png" />
+</div>
 
+<div align="center">
+    <img src="https://gclstorage.blob.core.windows.net/images/Lunar.Music.Web-screenshot-02.png" />
+</div>
+
+## How to use? (Localhost) ##
+
+1. Install Golang on your local machine;
 1. Clone the project to local;
+1. Install necessary Golang packages;
 1. (Optional) Start a local HTTP server such as [http-server](https://www.npmjs.com/package/http-server) in the `static` directory;
 
    This step is optional because now the static files are served from my Azure Storage. So you can directly use mine. Otherwise, feel free to update all the links pointing to those static in the `app\templates` directory to your own URL.
