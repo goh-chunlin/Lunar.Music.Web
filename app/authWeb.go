@@ -11,7 +11,6 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/microsoft"
 )
 
@@ -45,17 +44,18 @@ func showLoginCallbackPage(context *gin.Context) {
 	}
 
 	defer response.Body.Close()
-	var token *oauth2.Token
+	var tokenJSON *tokenJSON
 
-	// Try to decode the request body into the struct. If there is an error,
-	// respond to the client with the error message and a 400 status code.
-	err = json.NewDecoder(response.Body).Decode(&token)
+	// Try to decode the request body from OAuth2 providers, which is Azure AD in this case,
+	// into the struct tokenJSON. If there is an error, respond to the client with the error
+	// message and a 400 status code.
+	err = json.NewDecoder(response.Body).Decode(&tokenJSON)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	setTokenCookie(context, token)
+	setTokenCookie(context, tokenJSON)
 
 	context.HTML(http.StatusOK, "login-callback.tmpl.html", nil)
 }

@@ -35,6 +35,21 @@ var oauthConfig = &oauth2.Config{
 
 var s = securecookie.New([]byte(os.Getenv("SECURECOOKIE_HASH_KEY")), []byte(os.Getenv("SECURECOOKIE_BLOCK_KEY")))
 
+// tokenJSON is the struct representing the HTTP response from OAuth2
+// providers, which is Azure AD in this case, returning a token in JSON form.
+type tokenJSON struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int    `json:"expires_in"`
+	Resource     string `json:"resource"`
+	Scope        string `json:"scope"`
+}
+
+func (token *tokenJSON) expiry() (t time.Time) {
+	return time.Now().Add(time.Duration(token.ExpiresIn) * time.Second)
+}
+
 func generateStateOauthCookie(w http.ResponseWriter) string {
 	expiration := time.Now().Add(365 * 24 * time.Hour)
 
@@ -47,7 +62,15 @@ func generateStateOauthCookie(w http.ResponseWriter) string {
 	return state
 }
 
-func setTokenCookie(context *gin.Context, token *oauth2.Token) {
+func setTokenCookie(context *gin.Context, tokenJSON *tokenJSON) {
+
+	var token = &oauth2.Token{
+		AccessToken:  tokenJSON.AccessToken,
+		TokenType:    tokenJSON.TokenType,
+		RefreshToken: tokenJSON.RefreshToken,
+		Expiry:       tokenJSON.expiry(),
+	}
+
 	encoded, err := s.Encode(ACCESS_AND_REFRESH_TOKENS_COOKIE_NAME, token)
 	if err == nil {
 		cookie := &http.Cookie{
