@@ -5,8 +5,6 @@
 package main
 
 import (
-	"sort"
-
 	"github.com/gin-gonic/gin"
 	"github.com/goh-chunlin/go-onedrive/onedrive"
 )
@@ -124,36 +122,4 @@ func processMusicItem(context *gin.Context, client *onedrive.Client, driveItems 
 	}
 
 	return musicItems
-}
-
-func createAlbums(musicItems []MusicItem) []*Album {
-	sort.Slice(musicItems[:], func(i, j int) bool {
-		return musicItems[i].Album < musicItems[j].Album
-	})
-
-	currentAlbum := ""
-	var albums []*Album
-	var album *Album
-	for _, musicItem := range musicItems {
-
-		var albumMusicItems []MusicItem
-
-		if currentAlbum != musicItem.Album {
-			currentAlbum = musicItem.Album
-
-			albumMusicItems = append(albumMusicItems, musicItem)
-
-			album = &Album{
-				Title:        musicItem.Album,
-				ThumbnailURL: musicItem.AlbumThumbnailURL,
-				MusicItems:   albumMusicItems,
-			}
-
-			albums = append(albums, album)
-		} else {
-			album.MusicItems = append(album.MusicItems, musicItem)
-		}
-	}
-
-	return albums
 }
