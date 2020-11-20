@@ -10,12 +10,7 @@
 -->
 <html>
 
-<head>
-    <title>Music List - Lunar Music</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://lunarmusicwebstatic.blob.core.windows.net/css/main.css" />
-</head>
+{{ template "head.tmpl.html" . }}
 
 <body>
 
@@ -67,29 +62,10 @@
                 
         </div>
     </section>
+	
+	{{ template "footer.tmpl.html" . }}
 
-    <!-- Footer -->
-    <footer id="footer">
-        <div class="container">
-            <ul class="icons">
-                <li><a href="#" class="icon fa-facebook"></a></li>
-                <li><a href="#" class="icon fa-twitter"></a></li>
-                <li><a href="#" class="icon fa-instagram"></a></li>
-            </ul>
-            <ul class="copyright">
-                <li>&copy; Untitled</li>
-                <li>Design: <a href="http://templated.co">TEMPLATED</a></li>
-                <li>Images: <a href="http://unsplash.com">Unsplash</a></li>
-            </ul>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/jquery.min.js"></script>
-    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/skel.min.js"></script>
-    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/util.js"></script>
-    <script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/main.js"></script>
-	<script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/notify.min.js"></script>
+	{{ template "script.tmpl.html" . }}
 
     <script>
         function startLogout() {
