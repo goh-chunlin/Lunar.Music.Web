@@ -25,7 +25,7 @@
         <nav id="nav">
             <ul>
                 <li><a href="javascript:;" onclick="playAll();">Play All</a></li>
-                <li><a href="/auth/logout" onclick="return confirm('Are you sure that you want to logout?')">Logout</a>
+                <li><a href="javascript:;" onclick="startLogout();">Logout</a>
                 </li>
             </ul>
         </nav>
@@ -92,6 +92,12 @@
 	<script src="https://lunarmusicwebstatic.blob.core.windows.net/javascript/notify.min.js"></script>
 
     <script>
+        function startLogout() {
+            if (confirm('Are you sure that you want to logout?')) {
+                window.location = '/auth/logout';
+            }
+        }
+
 		function playAll() {
             $.ajax({
                 type: 'POST',
