@@ -29,7 +29,7 @@ var oauthConfig = &oauth2.Config{
 	RedirectURL:  AzureADCallbackURL,
 	ClientID:     AzureADClientID,
 	ClientSecret: AzureADClientSecret,
-	Scopes:       []string{"files.readwrite offline_access"},
+	Scopes:       []string{"files.read offline_access"},
 	Endpoint:     microsoft.AzureADEndpoint("common"),
 }
 
